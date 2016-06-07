@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CLI4P</string>
+    <string name="submit_button">Send</string>
 </resources>
