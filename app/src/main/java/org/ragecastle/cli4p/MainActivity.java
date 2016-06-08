@@ -57,18 +57,23 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO: Get phone number from contacts
         String destAddr = "5555555555";
-
+        String toast = "???";
         EditText editText = (EditText)findViewById(R.id.message);
+        // Get text from box
         String message = editText.getText().toString();
-
+        // CHeck for permissions before attempting to send
         if (ContextCompat.checkSelfPermission (this, Manifest.permission.SEND_SMS) !=
                 PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]
                     {Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION);
         } else {
             SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(destAddr, null, message, null, null);
-            Toast.makeText(this, "Sent it", Toast.LENGTH_LONG).show();
+            // Check if message is empty, apparently you cannot send those
+            if (!message.equals("")) {
+                smsManager.sendTextMessage(destAddr, null, message, null, null);
+                toast = "Sent it";
+            } else { toast = "cannot send empty message";}
+            Toast.makeText(this, toast, Toast.LENGTH_LONG).show();
         }
     }
 }
