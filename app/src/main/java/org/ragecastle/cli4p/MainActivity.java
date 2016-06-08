@@ -22,6 +22,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (savedInstanceState == null) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragment_message, new MessageFragment())
+                    .commit();
+        }
         if (ContextCompat.checkSelfPermission (this, Manifest.permission.SEND_SMS) !=
                 PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]
