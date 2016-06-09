@@ -8,15 +8,20 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 /**
  * Created by jahall on 6/7/16.
+ *
+ * This Fragment will display the conversation with the current contact
+ *
  */
 public class MessageFragment extends Fragment {
 
@@ -35,8 +40,38 @@ public class MessageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_message, container, false);
 
+        final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        // TODO: Populate listView with conversation
+
+        Button send = (Button) rootView.findViewById(R.id.submit_button);
+        send.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+
+                // TODO: Get phone number from contacts - passed from MainFragment
+
+                String destAddr = "5555555555";
+                String toast = "???";
+                EditText editText = (EditText) rootView.findViewById(R.id.message_box);
+                // Get text from box
+                String message = editText.getText().toString();
+                // CHeck for permissions before attempting to send
+                if (ContextCompat.checkSelfPermission (getActivity(), Manifest.permission.SEND_SMS) !=
+                        PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(getActivity(), new String[]
+                            {Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION);
+                } else {
+                    SmsManager smsManager = SmsManager.getDefault();
+                    // Check if message is empty, apparently you cannot send those
+                    if (!message.equals("")) {
+                        smsManager.sendTextMessage(destAddr, null, message, null, null);
+                        toast = "Sent it";
+                    } else { toast = "cannot send empty message";}
+                    Toast.makeText(getActivity(), toast, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
         return rootView;
     }
 

@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int SEND_SMS_PERMISSION = 0;
     private final String LOG_TAG = MainActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getFragmentManager()
                     .beginTransaction()
-                    .add(R.id.fragment_message, new MessageFragment())
+                    .add(R.id.fragment_message, new MainFragment())
                     .commit();
         }
         if (ContextCompat.checkSelfPermission (this, Manifest.permission.SEND_SMS) !=
@@ -51,29 +52,5 @@ public class MainActivity extends AppCompatActivity {
                 }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    public void onClick(View v){
-
-        // TODO: Get phone number from contacts
-        String destAddr = "5555555555";
-        String toast = "???";
-        EditText editText = (EditText)findViewById(R.id.message);
-        // Get text from box
-        String message = editText.getText().toString();
-        // CHeck for permissions before attempting to send
-        if (ContextCompat.checkSelfPermission (this, Manifest.permission.SEND_SMS) !=
-                PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, new String[]
-                    {Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION);
-        } else {
-            SmsManager smsManager = SmsManager.getDefault();
-            // Check if message is empty, apparently you cannot send those
-            if (!message.equals("")) {
-                smsManager.sendTextMessage(destAddr, null, message, null, null);
-                toast = "Sent it";
-            } else { toast = "cannot send empty message";}
-            Toast.makeText(this, toast, Toast.LENGTH_LONG).show();
-        }
     }
 }
