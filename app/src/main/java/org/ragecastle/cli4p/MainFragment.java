@@ -3,6 +3,7 @@ package org.ragecastle.cli4p;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -60,6 +62,18 @@ public class MainFragment extends Fragment {
         listViewContacts = (ListView) rootView.findViewById(R.id.listview_contacts);
         // Set the adapter to the list view
         listViewContacts.setAdapter(contactsAdapter);
+        // Set an onCLickListener for contacts
+        listViewContacts.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent,
+                                    View view,
+                                    int position,
+                                    long id)
+            {
+                String contactId = contactsAdapter.getItem(position);
+                ((Callback) getActivity()).onItemSelected(contactId);
+            }
+        });
 
         Button send = (Button) rootView.findViewById(R.id.submit_button);
         send.setOnClickListener(new View.OnClickListener(){
@@ -73,4 +87,7 @@ public class MainFragment extends Fragment {
         return rootView;
     }
 
+    public interface Callback {
+        void onItemSelected(String contactId);
+    }
 }

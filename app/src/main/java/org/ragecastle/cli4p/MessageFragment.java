@@ -15,7 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.Arrays;
 
 /**
  * Created by jahall on 6/7/16.
@@ -27,8 +30,10 @@ public class MessageFragment extends Fragment {
 
     private static final int SEND_SMS_PERMISSION = 0;
     private final String LOG_TAG = MessageFragment.class.getSimpleName();
+    private ListView listViewMessage;
+    private ContactsAdapter messageAdapter;
 
-    public MessageFragment(){}
+    public MessageFragment (){ }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,6 +49,16 @@ public class MessageFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // TODO: Populate listView with conversation
+        String [] tempMessages = {
+                "toMessage_1",
+                "fromMessage_1",
+                "toMessage_2"};
+        // Set the adapter to handle listing contacts
+        messageAdapter = new ContactsAdapter(getActivity(), Arrays.asList(tempMessages));
+        // Create the list view
+        listViewMessage = (ListView) rootView.findViewById(R.id.listview_contacts);
+        // Set the adapter to the list view
+        listViewMessage.setAdapter(messageAdapter);
 
         Button send = (Button) rootView.findViewById(R.id.submit_button);
         send.setOnClickListener(new View.OnClickListener(){

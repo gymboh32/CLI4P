@@ -9,10 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainFragment.Callback {
 
     private static final int SEND_SMS_PERMISSION = 0;
     private final String LOG_TAG = MainActivity.class.getSimpleName();
+    private final String MESSAGE_FRAG_TAG = "Message_Frag_Tag";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getFragmentManager()
                     .beginTransaction()
-                    .add(R.id.fragment_message, new MainFragment())
+                    .add(R.id.fragment_cli4p, new MainFragment())
                     .commit();
         }
         if (ContextCompat.checkSelfPermission (this, Manifest.permission.SEND_SMS) !=
@@ -42,10 +43,25 @@ public class MainActivity extends AppCompatActivity {
                         grantResults[0] == PackageManager.PERMISSION_GRANTED){
 
                 }else{
-                    Toast.makeText(this, "Really need that permission", Toast.LENGTH_LONG)
-                            .show();
+                    Toast.makeText(this,
+                            "Really need that permission",
+                            Toast.LENGTH_LONG).show();
                 }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onItemSelected(String contactId){
+        Bundle args = new Bundle();
+        args.putString("contact_id", contactId);
+        MessageFragment messageFragment = new MessageFragment();
+        messageFragment.setArguments(args);
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_cli4p,
+                        messageFragment,
+                        MESSAGE_FRAG_TAG)
+                .commit();
     }
 }
