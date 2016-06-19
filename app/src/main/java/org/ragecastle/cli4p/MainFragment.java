@@ -1,6 +1,7 @@
 package org.ragecastle.cli4p;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -11,9 +12,14 @@ import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by jahall on 6/8/16.
@@ -23,7 +29,8 @@ import android.widget.Toast;
  */
 public class MainFragment extends Fragment {
 
-    private static final int SEND_SMS_PERMISSION = 0;
+    private ListView listViewContacts;
+    private ContactsAdapter contactsAdapter;
 
     public MainFragment(){ }
 
@@ -41,6 +48,18 @@ public class MainFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // TODO: Populate listView with recent contacts
+        // Sting array of temp contacts
+        // TOOD: replace with db lookup sorted by most recent contact
+        String [] tempContacts = {
+                "contact_1",
+                "contact_2",
+                "contact_3"};
+        // Set the adapter to handle listing contacts
+        contactsAdapter = new ContactsAdapter(getActivity(), Arrays.asList(tempContacts));
+        // Create the list view
+        listViewContacts = (ListView) rootView.findViewById(R.id.listview_contacts);
+        // Set the adapter to the list view
+        listViewContacts.setAdapter(contactsAdapter);
 
         Button send = (Button) rootView.findViewById(R.id.submit_button);
         send.setOnClickListener(new View.OnClickListener(){
