@@ -12,8 +12,10 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity implements MainFragment.Callback {
 
     private static final int SEND_SMS_PERMISSION = 0;
-    private final String LOG_TAG = MainActivity.class.getSimpleName();
-    private final String MESSAGE_FRAG_TAG = "Message_Frag_Tag";
+    private static final int READ_CONTACTS_PERMISSION = 1;
+    private static final String CONTACTS_FRAG_TAG = "Contacts_Frag_Tag";
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final String MESSAGE_FRAG_TAG = "Message_Frag_Tag";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,13 +25,22 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
         if (savedInstanceState == null) {
             getFragmentManager()
                     .beginTransaction()
-                    .add(R.id.fragment_cli4p, new MainFragment())
+                    .add(R.id.fragment_cli4p,
+                            new MainFragment(),
+                            CONTACTS_FRAG_TAG)
                     .commit();
         }
+        // SMS permissions
         if (ContextCompat.checkSelfPermission (this, Manifest.permission.SEND_SMS) !=
                 PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]
                     {Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION);
+        }
+        // CONTACTS permissions
+        if (ContextCompat.checkSelfPermission (this, Manifest.permission.READ_CONTACTS) !=
+                PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]
+                    {Manifest.permission.SEND_SMS}, READ_CONTACTS_PERMISSION);
         }
     }
 
@@ -44,9 +55,20 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
 
                 }else{
                     Toast.makeText(this,
-                            "Really need that permission",
+                            "Need SMS permission",
                             Toast.LENGTH_LONG).show();
                 }
+                break;
+            case READ_CONTACTS_PERMISSION:
+                if (grantResults.length > 0 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
+                }else{
+                    Toast.makeText(this,
+                            "Need CONTACTS permission",
+                            Toast.LENGTH_LONG).show();
+                }
+                break;
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -59,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
         messageFragment.setArguments(args);
         getFragmentManager()
                 .beginTransaction()
+                .addToBackStack(CONTACTS_FRAG_TAG)
                 .replace(R.id.fragment_cli4p,
                         messageFragment,
                         MESSAGE_FRAG_TAG)

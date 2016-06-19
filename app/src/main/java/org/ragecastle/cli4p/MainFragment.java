@@ -5,7 +5,11 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -48,18 +52,63 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-        // TODO: Populate listView with recent contacts
-        // Sting array of temp contacts
-        // TOOD: replace with db lookup sorted by most recent contact
-        String [] tempContacts = {
-                "contact_1",
-                "contact_2",
-                "contact_3"};
-        // Set the adapter to handle listing contacts
-        contactsAdapter = new ContactsAdapter(getActivity(), Arrays.asList(tempContacts));
         // Create the list view
         listViewContacts = (ListView) rootView.findViewById(R.id.listview_contacts);
+
+        // TODO: Populate listView with recent contacts
+
+        fillList();
+
+        Button send = (Button) rootView.findViewById(R.id.submit_button);
+        send.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+
+                // TODO: Search through contacts
+
+            }
+        });
+
+        return rootView;
+    }
+
+    private void fillList() {
+        // TOOD: replace with db lookup sorted by most recent contact
+
+        Cursor cursor;
+        String [] tempContacts;
+
+        String [] projection = {
+                ContactsContract.Contacts._ID,
+                ContactsContract.Contacts.DISPLAY_NAME_PRIMARY};
+        // Default to CONTENT_URI
+        Uri contactsUri = ContactsContract.Contacts.CONTENT_URI;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Use the preferred CONTENT_FREQUENT_URI if you can
+            contactsUri = ContactsContract.Contacts.CONTENT_FREQUENT_URI;
+        }
+
+        cursor = getActivity().getContentResolver().query(
+                contactsUri,
+                projection,
+                null,
+                null,
+                null);
+        assert cursor != null;
+        tempContacts = new String[cursor.getCount()];
+        if(cursor.moveToFirst()){
+            int i = 0;
+            do {
+                tempContacts[i] =
+                        cursor.getString(
+                                cursor.getColumnIndex(
+                                        ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
+                i++;
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        // Set the adapter to handle listing contacts
+        contactsAdapter = new ContactsAdapter(getActivity(), Arrays.asList(tempContacts));
         // Set the adapter to the list view
         listViewContacts.setAdapter(contactsAdapter);
         // Set an onCLickListener for contacts
@@ -74,17 +123,6 @@ public class MainFragment extends Fragment {
                 ((Callback) getActivity()).onItemSelected(contactId);
             }
         });
-
-        Button send = (Button) rootView.findViewById(R.id.submit_button);
-        send.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-
-                // TODO: Search through contacts
-
-            }
-        });
-
-        return rootView;
     }
 
     public interface Callback {
