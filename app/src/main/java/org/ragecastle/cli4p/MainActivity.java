@@ -9,6 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import org.ragecastle.cli4p.Contacts_View.MainFragment;
+import org.ragecastle.cli4p.Messages_View.MessageFragment;
+
 public class MainActivity extends AppCompatActivity implements MainFragment.Callback {
 
     private static final int SEND_SMS_PERMISSION = 0;
