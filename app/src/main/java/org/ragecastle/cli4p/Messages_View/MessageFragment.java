@@ -1,14 +1,12 @@
-package org.ragecastle.cli4p;
+package org.ragecastle.cli4p.Messages_View;
 
 import android.Manifest;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +16,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.Arrays;
+import org.ragecastle.cli4p.Contacts_View.ContactsAdapter;
+import org.ragecastle.cli4p.R;
 
 /**
  * Created by jahall on 6/7/16.
@@ -54,7 +53,7 @@ public class MessageFragment extends Fragment {
                 "fromMessage_1",
                 "toMessage_2"};
         // Set the adapter to handle listing contacts
-        messageAdapter = new ContactsAdapter(getActivity(), Arrays.asList(tempMessages));
+     //   messageAdapter = new ContactsAdapter(getActivity(), Arrays.asList(tempMessages));
         // Create the list view
         listViewMessage = (ListView) rootView.findViewById(R.id.listview_contacts);
         // Set the adapter to the list view
